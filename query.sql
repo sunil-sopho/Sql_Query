@@ -250,12 +250,18 @@ type = 'journals';
 --23--
 create View big as
 Select Author.name as AuthorName,count(Paper.PaperId) as count,journals.name as name from Author,PaperByAuthors,Paper,journals Where
-PaperByAuthors.AuthorId = Author.AuthorId and
 PaperByAuthors.PaperId = Paper.PaperId and
-Paper.VenueId = journals.VenueId Group By(Author.name,journals.name);
+PaperByAuthors.AuthorId = Author.AuthorId and
+Paper.VenueId = journals.VenueId 
+Group By(Author.name,journals.name);
 
-select AuthorName,name from Big Where 
-count = (Select Max(count) from Big as b where b.name = Big.name)
-;
+Create View max  AS
+Select name,Max(count) as count from Big Group By name Order by name;
 
+select AuthorName,Big.name from Big,max Where 
+Big.name = max.name and
+Big.count = max.count Order By Big.name,AuthorName;
+
+Drop View max;
+Drop View Big;
 Drop View journals;
