@@ -1,1 +1,4 @@
 *.tsv
+out*
+store*
+*.csv
